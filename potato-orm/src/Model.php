@@ -2,11 +2,25 @@
 
 namespace Alex;
 
+/**
+ * This is a class is a simple ORM that persorms
+ * basic crud operations
+ *
+ * @author Alex Kangethe
+ */
+
 use PDO;
 use Exception;
 
 abstract class Model
 {
+     /**
+     * Property declaration
+     *
+     * This are the properties that will be used by the class
+     *
+     */
+
     public static $database = null;
     public $host = 'localhost';
     public $dbName = 'orm';
@@ -14,6 +28,15 @@ abstract class Model
     public $password = 'secret';
     public static $data = [];
     public static $tableName = 'table';
+
+     /**
+     * A constructor
+     *
+     * It is called every time the an object is instansiated
+     * before the object can be manupilated by the methods.
+     * It creates the databse connection to be used.
+     *
+     */
 
     public function __construct()
     {
@@ -25,27 +48,51 @@ abstract class Model
                 $this->password
             );
 
-            static::$database->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+            static::$database
+            ->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         } catch (PDOException $exception) {
             echo "Connection error: " .$exception->getMessage();
         }
     }
 
+    /**
+     * This method maps name to column
+     *
+     *
+     * @return The the value
+     */
+
     public function __set($name, $value)
     {
         if (array_key_exists($name, static::$data)) {
             static::$data[$name] = $value;
+            return $value;
         }
     }
+
+    /**
+     * This method maps name to column
+     *
+     * @throws Exception if no such value exists
+     *
+     * @return The data name
+     *
+     */
 
     public function __get($name)
     {
         if (array_key_exists($name, static::$data)) {
             return static::$data[$name];
         } else {
-            throw new Exception('Sorry no such value exists');
+            throw new Exception("Sorry no such value exists");
         }
     }
+
+    /**
+     * This method saves the data into the database
+     *
+     * @return The executed statement
+     */
 
     public function save()
     {
@@ -56,8 +103,14 @@ abstract class Model
         $table = static::$tableName;
         $sql = "INSERT INTO ". $table ."($fieldlist) values(${qs}?)";
         $stmt = static::$database->prepare($sql);
-        $stmt->execute(array_values($bind));
+        return $stmt->execute(array_values($bind));
     }
+
+    /**
+     * This method gets all the data from the database
+     *
+     * @return The result
+     */
 
     public static function getAll()
     {
@@ -72,11 +125,18 @@ abstract class Model
         }
     }
 
+    /**
+     * This method removes the data with the declared id
+     *
+     * @param id. The id you would like to destroy it's contents
+     *
+     * @return The result
+     */
+
     public static function destroy($id)
     {
         $table = static::$tableName;
         $sql = "DELETE FROM " . $table . " WHERE id=$id";
-        var_dump($sql);
         static::$database->exec($sql);
         $sql = "UPDATE " . $table . " SET ";
         $bind = static::$data;
@@ -89,10 +149,17 @@ abstract class Model
             }
         }
         $sql .= " WHERE id = " . $id;
-        var_dump($sql);
         $stmt = static::$database->prepare($sql);
-        $stmt->execute(array_values($bind));
+        return $stmt->execute(array_values($bind));
     }
+
+    /**
+     * This method finds the data with the declared id
+     *
+     * @param id. The id you would like to find it's contents
+     *
+     * @return The result
+     */
 
     public static function find($id)
     {
@@ -102,6 +169,13 @@ abstract class Model
         $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
         return $results;
     }
+
+    /**
+     * This method updates the data with the new values
+     *
+     *
+     * @return The result
+     */
 
     public function update()
     {
@@ -118,15 +192,20 @@ abstract class Model
         }
         $sql .= " WHERE id = " . static::$data['id'];
         $stmt = static::$database->prepare($sql);
-        $stmt->execute();
+        return $stmt->execute();
 
     }
+    /**
+     * This method removes the fields in the database table
+     *
+     * @return The result
+     */
 
     public function truncate()
     {
         $table = static::$tableName;
         $sql = "TRUNCATE " . $table ;
         $stmt = static::$database->prepare($sql);
-        $stmt->execute();
+        return $stmt->execute();
     }
 }
