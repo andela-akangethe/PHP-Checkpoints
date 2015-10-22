@@ -22,10 +22,10 @@ abstract class Model
      */
 
     public static $database = null;
-    public $host = 'localhost';
-    public $dbName = 'orm';
-    public $username = 'homestead';
-    public $password = 'secret';
+    public static $host = 'localhost';
+    public static $dbName = 'orm';
+    public static $username = 'homestead';
+    public static $password = 'secret';
     public static $data = [];
     public static $tableName = 'table';
 
@@ -42,10 +42,10 @@ abstract class Model
     {
         try {
             static::$database = new PDO(
-                'mysql:host='.$this->host
-                .';dbname='.$this->dbName,
-                $this->username,
-                $this->password
+                'mysql:host='. static::$host
+                .';dbname='.static::$dbName,
+                static::$username,
+                static::$password
             );
 
             static::$database
@@ -64,10 +64,8 @@ abstract class Model
 
     public function __set($name, $value)
     {
-        if (array_key_exists($name, static::$data)) {
-            static::$data[$name] = $value;
-            return $value;
-        }
+        static::$data[$name] = $value;
+        return $value;
     }
 
     /**
@@ -121,7 +119,7 @@ abstract class Model
         if (empty($results)) {
             throw new Exception('Sorry you have nothing in the database');
         } else {
-            return $results;
+            return static::instance($results);
         }
     }
 
@@ -153,6 +151,24 @@ abstract class Model
         return $stmt->execute(array_values($bind));
     }
 
+    public static function instance($results)
+    {
+        $arr = [];
+        for ($i = 0; $i < count($results); $i++) {
+            $instance = new static();
+            foreach ($results[$i] as $key => $value) {
+                $instance->$key = $value;
+            }
+            array_push($arr, $instance);
+        }
+
+        if (count($results) == 1) {
+            return $instance;
+        } else {
+            return $arr;
+        }
+    }
+
     /**
      * This method finds the data with the declared id
      *
@@ -167,7 +183,7 @@ abstract class Model
         $sql = "SELECT * FROM " . $table . " WHERE id=$id";
         $stmt = static::$database->query($sql);
         $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        return $results;
+        return static::instance($results);
     }
 
     /**
