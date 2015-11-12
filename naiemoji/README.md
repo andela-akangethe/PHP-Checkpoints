@@ -14,7 +14,7 @@ Emoji REST API
 
 ***DATABASE CONNECTION***
 
-For this projects how to I am using homestead. Installation resource [found here](http://www.easylaravelbook.com/blog/2015/01/08/installing-and-configuring-homestead-2-dot-0-for-laravel-5/)
+For this project I am using homestead. Installation resource [found here](http://www.easylaravelbook.com/blog/2015/01/08/installing-and-configuring-homestead-2-dot-0-for-laravel-5/)
 For the purpose of this project I have named the app in homestead edit as nairo.app
 
 
