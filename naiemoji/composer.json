@@ -1,6 +1,7 @@
 {
     "require": {
         "slim/slim": "^2.6",
-        "phpspec/phpspec": "^2.3"
+        "phpunit/phpunit": "4.8.*",
+        "fabpot/goutte": "^3.1"
     }
 }

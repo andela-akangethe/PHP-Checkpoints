@@ -14,7 +14,8 @@ $app = new \Slim\Slim();
 $dbhost = 'localhost';
 $dbuser = 'homestead';
 $dbpass = 'secret';
-$dbname = 'naiemoji';
+// $dbname = 'naiemoji';
+$dbname = 'orm';
 $dbmethod = 'mysql:dbname=';
 
 $dsn = $dbmethod.$dbname;
@@ -62,7 +63,7 @@ $app->post('/login', function () use ($app, $db) {
     }
 });
 
-// Login a user
+// Logout a user
 $app->post('/logout', function () use ($app, $db) {
     $email = $app->request->post('email');
     $user = $db->users()->where('email', $email);
@@ -136,10 +137,11 @@ $app->post('/emoji/:name', function ($name) use ($app, $db) {
         ));
     } else {
         $result = $db->emojis->insert($emoji);
-        echo json_encode(array(
-            'status' => true,
-            'message' => 'You have created a new emoji',
-        ));
+        // echo json_encode(array(
+        //     'status' => true,
+        //     'message' => 'You have created a new emoji',
+        // ));
+        echo json_encode(array('id' => $result['id']));
         $status = $app->response->setStatus(201);
         return $status;
     }
@@ -159,10 +161,8 @@ $app->put('/emoji/:id/:name', function ($id, $name) use ($app, $db) {
         if ($emoji->fetch()) {
             $post = $app->request()->put();
             $result = $emoji->update($post);
-            echo json_encode(array(
-                'status' => (bool) $result,
-                'message' => 'Emoji updated successfully',
-                ));
+            $emoji = $db->emojis()->where('id', $id);
+            echo ($emoji->fetch('id'));
         } else {
             echo json_encode(array(
                 'status' => false,
@@ -186,10 +186,8 @@ $app->patch('/emoji/:id/:name', function ($id, $name) use ($app, $db) {
         if ($emoji->fetch()) {
             $post = $app->request()->patch();
             $result = $emoji->update($post);
-            echo json_encode(array(
-                'status' => (bool) $result,
-                'message' => 'Emoji updated successfully',
-                ));
+            $emoji = $db->emojis()->where('id', $id);
+            echo ($emoji->fetch('id'));
         } else {
             echo json_encode(array(
                 'status' => false,
@@ -212,10 +210,7 @@ $app->delete('/emoji/:id/:name', function ($id, $name) use ($app, $db) {
     } else {
         if ($emoji->fetch()) {
             $result = $emoji->delete();
-            echo json_encode(array(
-                'status' => true,
-                'message' => 'Emoji deleted successfully',
-            ));
+            echo ($result);
         } else {
             echo json_encode(array(
                 'status' => false,

@@ -65,7 +65,7 @@ To update an emoji
 
 To delete an emoji
 
-```curl -i -X DELETE http://nairo.app/emoji/emojiid```
+```curl -i -X DELETE http://nairo.app/emoji/emojiid/nameyouusedtoregister```
 
 ###NOTE
 The user has public access in getting all the emojis, getting emoji by id, registering as a user and login in.
