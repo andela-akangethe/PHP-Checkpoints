@@ -78,7 +78,7 @@ to do is:
 - In your terminal run 
 ```
 php phpunit
-
+```
 ###NOTE
 The user has public access in getting all the emojis, getting emoji by id, registering as a user and login in.
 To do the rest the user first has to have logged in
