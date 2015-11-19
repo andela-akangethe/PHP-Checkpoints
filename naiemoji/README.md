@@ -7,7 +7,9 @@ Emoji REST API
 ***Requirement***
 
 1. Run ```composer install```
-2. Install PHPSpec [found here](http://phpspec.readthedocs.org/en/latest/)
+2. Install PHPUnit [found here](https://phpunit.de/)
+- To install globally on mac [go to](https://allisterantosik.com/2014/01/08/installing-phpunit-on-osx-mavericks-via-composer/)
+and on windows add the bin directory to the path
 3. POSTMAN [found here](https://chrome.google.com/webstore/detail/postman/fhbjgbiflinjbdggehcddcbncdddomop?hl=en) or CURL (which I will be using in the how to) [found here](http://curl.haxx.se/libcurl/php/)
 
 ## How to use the REST API
@@ -66,6 +68,16 @@ To update an emoji
 To delete an emoji
 
 ```curl -i -X DELETE http://nairo.app/emoji/emojiid/nameyouusedtoregister```
+
+***How to run tests***
+
+Assuming you have installed PHPUnit globally all you have
+to do is:
+
+- Go to the naiemoji directory
+- In your terminal run 
+```
+php phpunit
 
 ###NOTE
 The user has public access in getting all the emojis, getting emoji by id, registering as a user and login in.
